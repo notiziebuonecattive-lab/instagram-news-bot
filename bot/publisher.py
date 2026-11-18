@@ -341,7 +341,8 @@ def build_mutation(*, caption: str, channel_id: str, urls: list[str]) -> str:
         raise PublisherError(f"Il carosello richiede da {MIN_SLIDES} a {MAX_SLIDES} URL HTTPS")
     assets = ", ".join("{image: {url: " + json.dumps(u) + "}}" for u in urls)
     return ("mutation { createPost(input: {text: " + json.dumps(caption, ensure_ascii=False)
-            + " channelId: " + json.dumps(channel_id) + " schedulingType: automatic mode: shareNow assets: ["
+            + " channelId: " + json.dumps(channel_id) + " schedulingType: automatic mode: shareNow "
+            + "metadata: {instagram: {type: post shouldShareToFeed: true}} assets: ["
             + assets + "]}) { ... on PostActionSuccess { post { id } } ... on MutationError { message } } }")
 
 

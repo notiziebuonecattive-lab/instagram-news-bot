@@ -339,6 +339,17 @@ NON SCRIVERE QUESTO NELLA CAPTION.
         self.assertLess(query.index("02.png"), query.index("03.png"))
         self.assertIn('\\"citato\\"', query)
 
+    def test_instagram_post_metadata_on_carousels(self):
+        query = p.build_mutation(
+            caption="Un carosello di prova con immagini illustrative.",
+            channel_id="instagram-id",
+            urls=["https://example.org/01.png", "https://example.org/02.png"],
+        )
+        self.assertIn("metadata: {instagram: {type: post shouldShareToFeed: true}}", query)
+        self.assertIn("schedulingType: automatic", query)
+        self.assertIn("mode: shareNow", query)
+        self.assertEqual(query.count("{image: {url:"), 2)
+
     def test_buffer_reject_wrong_assets(self):
         with self.assertRaisesRegex(p.PublisherError, "da 2 a 20 URL"):
             p.build_mutation(caption="ciao", channel_id="ig", urls=["https://example.org/01.png"])
