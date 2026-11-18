@@ -1,0 +1,79 @@
+name: Instagram - pubblica carosello pronto
+
+# ATTENZIONE: il calendario e' VOLUTAMENTE DISATTIVATO durante l'installazione.
+# Da attivare manualmente dopo il collaudo, con ALLOW_PUBLISH=true:
+# on:
+#   schedule:
+#     - cron: '7 12 * * 2,5'
+#       timezone: Europe/Rome
+#   workflow_dispatch:
+#     ...
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Anteprima = nessuna pubblicazione; publish = invio reale se ALLOW_PUBLISH=true'
+        required: true
+        default: preview
+        type: choice
+        options: [preview, publish]
+
+concurrency:
+  group: instagram-news-publisher
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      ALLOW_PUBLISH: ${{ vars.ALLOW_PUBLISH || 'false' }}
+      BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+      BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: true
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Controlla la coda senza pubblicare
+        run: |
+          python -m bot.publisher validate
+          python -m bot.publisher plan
+      - name: Prenota il prossimo carosello soltanto se autorizzato
+        id: reserve
+        if: ${{ vars.ALLOW_PUBLISH == 'true' && (github.event_name == 'schedule' || inputs.mode == 'publish') }}
+        shell: bash
+        run: |
+          if [[ '${{ github.event_name }}' == 'workflow_dispatch' ]]; then
+            python -m bot.publisher reserve --manual
+          else
+            python -m bot.publisher reserve
+          fi
+      - name: Registra la prenotazione prima della richiesta a Buffer
+        if: ${{ steps.reserve.outputs.selected == 'true' }}
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/state.json
+          git commit -m 'Reserve Instagram carousel before sending'
+          git push
+      - name: Invia a Buffer UNA volta (nessun tentativo automatico aggiuntivo)
+        if: ${{ steps.reserve.outputs.selected == 'true' }}
+        shell: bash
+        env:
+          POST_ID: ${{ steps.reserve.outputs.post_id }}
+        run: |
+          python -m bot.publisher send --repo "$GITHUB_REPOSITORY" --commit "$(git rev-parse HEAD)" --post "$POST_ID"
+      - name: Registra la conferma ricevuta da Buffer
+        if: ${{ steps.reserve.outputs.selected == 'true' }}
+        shell: bash
+        run: |
+          git add data/state.json
+          git commit -m 'Record Buffer acceptance of carousel'
+          git push

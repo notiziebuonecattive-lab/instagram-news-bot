@@ -1,8 +1,0 @@
-__pycache__/
-.pytest_cache/
-.venv/
-.env
-*.pyc
-payload.json
-*.log
-.DS_Store

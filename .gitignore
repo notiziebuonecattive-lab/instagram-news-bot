@@ -1,8 +1,8 @@
 __pycache__/
+*.py[cod]
 .pytest_cache/
 .venv/
 .env
-*.pyc
-payload.json
-*.log
+*.secret
 .DS_Store
+Thumbs.db

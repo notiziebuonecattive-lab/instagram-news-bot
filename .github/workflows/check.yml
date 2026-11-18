@@ -1,0 +1,25 @@
+name: Verifica caroselli (nessuna pubblicazione)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Test automatici
+        run: python -m unittest discover -s tests -v
+      - name: Controlla contenuti della coda
+        run: python -m bot.publisher validate
+      - name: Mostra la prossima pubblicazione
+        run: python -m bot.publisher plan
