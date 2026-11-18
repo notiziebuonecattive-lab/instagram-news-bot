@@ -75,8 +75,8 @@ class PublisherTests(unittest.TestCase):
 
     def test_missing_image(self):
         folder = self.add()
-        (folder / "03.png").unlink()
-        with self.assertRaisesRegex(p.PublisherError, "Immagine"):
+        (folder / "02.png").unlink()
+        with self.assertRaisesRegex(p.PublisherError, "Numerazione"):
             p.scan_queue()
 
     def test_wrong_dimensions(self):
@@ -87,8 +87,8 @@ class PublisherTests(unittest.TestCase):
 
     def test_bad_caption(self):
         folder = self.add()
-        (folder / "caption.txt").write_text("Manca hashtag", encoding="utf-8")
-        with self.assertRaisesRegex(p.PublisherError, "didascalia"):
+        (folder / "caption.txt").write_text("", encoding="utf-8")
+        with self.assertRaisesRegex(p.PublisherError, "vuota"):
             p.scan_queue()
 
     def test_missing_sources(self):
@@ -108,6 +108,186 @@ class PublisherTests(unittest.TestCase):
         (folder / "sources.txt").write_text("http://example.org/a\nhttps://example.net/b")
         with self.assertRaisesRegex(p.PublisherError, "HTTPS"):
             p.scan_queue()
+
+
+    def test_two_slides_allowed(self):
+        folder = self.add()
+        (folder / "03.png").unlink()
+        post = p.scan_queue()[0]
+        self.assertEqual([x.name for x in post["images"]], ["01.png", "02.png"])
+
+    def test_four_slides_allowed_and_ordered(self):
+        folder = self.add()
+        (folder / "04.png").write_bytes(png())
+        post = p.scan_queue()[0]
+        self.assertEqual([x.name for x in post["images"]], ["01.png", "02.png", "03.png", "04.png"])
+        urls = p.media_urls(post, repo="owner/repo", commit="a" * 40)
+        self.assertEqual(len(urls), 4)
+        self.assertTrue(urls[-1].endswith("04.png"))
+        mutation = p.build_mutation(caption=post["caption"], channel_id="ig", urls=urls)
+        self.assertEqual(mutation.count("{image: {url:"), 4)
+        self.assertLess(mutation.index("01.png"), mutation.index("04.png"))
+
+    def test_twenty_slides_allowed(self):
+        folder = self.add()
+        for i in range(4, 21):
+            (folder / f"{i:02d}.png").write_bytes(png())
+        self.assertEqual(len(p.scan_queue()[0]["images"]), 20)
+        urls = [f"https://example.org/{i:02d}.png" for i in range(1, 21)]
+        self.assertEqual(p.build_mutation(caption="Test", channel_id="ig", urls=urls).count("{image: {url:"), 20)
+
+    def test_more_than_twenty_slides_rejected(self):
+        folder = self.add()
+        for i in range(4, 22):
+            (folder / f"{i:02d}.png").write_bytes(png())
+        with self.assertRaisesRegex(p.PublisherError, "da 2 a 20"):
+            p.scan_queue()
+
+    def test_one_slide_rejected(self):
+        folder = self.add()
+        (folder / "02.png").unlink()
+        (folder / "03.png").unlink()
+        with self.assertRaisesRegex(p.PublisherError, "da 2 a 20"):
+            p.scan_queue()
+
+    def test_wrong_image_filename_rejected(self):
+        folder = self.add()
+        (folder / "copertina.png").write_bytes(png())
+        with self.assertRaisesRegex(p.PublisherError, "Nome immagine"):
+            p.scan_queue()
+
+    def test_caption_without_hashtags_gets_category_defaults(self):
+        folder = self.add("001_curiosita_storia")
+        (folder / "caption.txt").write_text("Questo testo descrive una curiosita' senza hashtag aggiunti.", encoding="utf-8")
+        post = p.scan_queue()[0]
+        self.assertIn("#Misteri", post["caption"])
+        self.assertIn("#Curiosita", post["caption"])
+
+    def test_caption_hashtag_file_deduplicates(self):
+        folder = self.add()
+        (folder / "caption.txt").write_text("Ecco una descrizione gia' verificata. #Mondo", encoding="utf-8")
+        (folder / "hashtags.txt").write_text("#Mondo #Scienza #Scienza #Ricerca", encoding="utf-8")
+        text = p.scan_queue()[0]["caption"]
+        self.assertEqual(text.count("#Mondo"), 1)
+        self.assertEqual(text.count("#Scienza"), 1)
+        self.assertIn("#Ricerca", text)
+
+    def test_editorial_text_builds_caption_and_keeps_note_private(self):
+        folder = self.add("001_curiosita_enigma")
+        (folder / "caption.txt").unlink()
+        (folder / "sources.txt").unlink()
+        editorial = """NOTIZIA 01 — UN MISTERO
+CATEGORIA: Misteri
+TESTI DEL CAROSELLO
+===================
+SLIDE 1 — COPERTINA
+TITOLO: Un enigma antico
+TESTO: Spiegazione nella grafica.
+
+CAPTION INSTAGRAM
+=================
+Un manoscritto antico e' ancora oggetto di studio. Questo e' il testo pronto per Instagram.
+
+HASHTAG
+=======
+#Misteri #Storia #Curiosita
+
+FONTI CONSULTABILI
+==================
+- Istituto A
+  https://example.org/research
+- Istituto B
+  https://example.net/report
+
+NOTA EDITORIALE (NON PUBBLICARE)
+===============================
+NON SCRIVERE QUESTO NELLA CAPTION.
+"""
+        (folder / "31_mistero.txt").write_text(editorial, encoding="utf-8")
+        post = p.scan_queue()[0]
+        self.assertEqual(len(post["sources"]), 2)
+        self.assertIn("#Storia", post["caption"])
+        self.assertNotIn("NOTA EDITORIALE", post["caption"])
+        self.assertNotIn("NON SCRIVERE", post["caption"])
+        self.assertNotIn("SLIDE 1", post["caption"])
+        self.assertNotIn("FONTI CONSULTABILI", post["caption"])
+
+    def test_editorial_missing_second_source_fails_closed(self):
+        folder = self.add()
+        (folder / "caption.txt").unlink()
+        (folder / "sources.txt").unlink()
+        text = "CAPTION INSTAGRAM\n=================\nUna storia ben documentata con testo e fatti verificati.\nHASHTAG\n=======\n#Scienza\nFONTI CONSULTABILI\n==================\nhttps://example.org/only\n"
+        (folder / "notizia.txt").write_text(text, encoding="utf-8")
+        with self.assertRaisesRegex(p.PublisherError, "almeno due"):
+            p.scan_queue()
+
+    def test_editorial_long_caption_fails_no_truncation(self):
+        folder = self.add()
+        (folder / "caption.txt").unlink()
+        (folder / "sources.txt").unlink()
+        txt = ("CAPTION INSTAGRAM\n=================\n" + "Parola " * 400
+               + "\nHASHTAG\n=======\n#Notizie\nFONTI CONSULTABILI\n==================\n"
+               + "https://example.org/one\nhttps://example.net/two\n")
+        (folder / "notizia.txt").write_text(txt, encoding="utf-8")
+        with self.assertRaisesRegex(p.PublisherError, "2200"):
+            p.scan_queue()
+
+    def test_real_editorial_parser_with_four_slides_and_buffer(self):
+        folder = self.add()
+        (folder / "04.png").write_bytes(png())
+        (folder / "caption.txt").unlink()
+        (folder / "sources.txt").unlink()
+        (folder / "notizia.txt").write_text(
+            "CAPTION INSTAGRAM\n=================\nDidascalia di una notizia verificata, qui con maggiori dettagli.\n"
+            "HASHTAG\n=======\n#Notizie #Ambiente\n"
+            "FONTI CONSULTABILI\n==================\nhttps://example.org/article\nhttps://example.net/article\n",
+            encoding="utf-8")
+        p.save_state({"posts": {folder.name: {"status": "reserved"}}, "slots": {}})
+        fake = {"createPost": {"post": {"id": "buffer-123"}}}
+        with patch.object(p, "check_public_png") as media, patch.object(p, "_channel", return_value="ig"), \
+             patch.object(p, "_graphql", return_value=fake) as send, \
+             patch.dict(os.environ, {"ALLOW_PUBLISH": "true", "BUFFER_API_KEY": "fake"}):
+            p.send(repo="owner/repo", commit="a" * 40, post_id=folder.name)
+        self.assertEqual(media.call_count, 4)
+        self.assertEqual(send.call_count, 1)
+        self.assertIn("#Ambiente", send.call_args.args[0])
+        self.assertIn("04.png", send.call_args.args[0])
+
+    def test_two_editorial_files_rejected(self):
+        folder = self.add()
+        (folder / "caption.txt").unlink()
+        (folder / "sources.txt").unlink()
+        (folder / "notizia.txt").write_text("abc", encoding="utf-8")
+        (folder / "altro.txt").write_text("abc", encoding="utf-8")
+        with self.assertRaisesRegex(p.PublisherError, "un solo TXT"):
+            p.scan_queue()
+
+    def test_compose_editorial_with_one_source_warns_but_exports(self):
+        folder = self.base / "out"
+        input_file = self.base / "input.txt"
+        input_file.write_text(
+            "CAPTION INSTAGRAM\n=================\nUn testo verificato da un redattore, pronto per l'uso su Instagram.\n"
+            "HASHTAG\n=======\n#Notizie #Scienza\n"
+            "FONTI CONSULTABILI\n==================\nhttps://example.org/originale\n", encoding="utf-8")
+        from unittest.mock import patch as patch_out
+        with patch_out("sys.stdout", new_callable=__import__("io").StringIO) as output:
+            p.compose_editorial(input_file, "buona", folder)
+        self.assertIn("ATTENZIONE", output.getvalue())
+        self.assertIn("#Scienza", (folder / "caption.txt").read_text())
+        self.assertEqual((folder / "sources.txt").read_text().strip(), "https://example.org/originale")
+
+    def test_compose_editorial_does_not_overwrite(self):
+        input_file = self.base / "input.txt"
+        input_file.write_text(
+            "CAPTION INSTAGRAM\n=================\nUn testo di prova ben piu' lungo di trenta caratteri e verificato.\n"
+            "HASHTAG\n=======\n#Scienza\nFONTI CONSULTABILI\n==================\n"
+            "https://example.org/a\nhttps://example.net/b\n", encoding="utf-8")
+        target = self.base / "export"
+        target.mkdir()
+        (target / "caption.txt").write_text("Non sovrascrivere", encoding="utf-8")
+        with self.assertRaisesRegex(p.PublisherError, "non sovrascrivo"):
+            p.compose_editorial(input_file, "buona", target)
+        self.assertEqual((target / "caption.txt").read_text(), "Non sovrascrivere")
 
     def test_empty_state(self):
         self.assertEqual(p.load_state(), {"posts": {}, "slots": {}})
@@ -160,7 +340,7 @@ class PublisherTests(unittest.TestCase):
         self.assertIn('\\"citato\\"', query)
 
     def test_buffer_reject_wrong_assets(self):
-        with self.assertRaisesRegex(p.PublisherError, "tre URL"):
+        with self.assertRaisesRegex(p.PublisherError, "da 2 a 20 URL"):
             p.build_mutation(caption="ciao", channel_id="ig", urls=["https://example.org/01.png"])
 
     def test_media_links_pin_commit(self):

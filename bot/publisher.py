@@ -29,6 +29,16 @@ CATEGORIES = {"buona", "cattiva", "curiosita"}
 NAME_RE = re.compile(r"^(\d{3})_(buona|cattiva|curiosita)_[a-z0-9][a-z0-9_-]*$")
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 MAX_IMAGE_BYTES = 18 * 1024 * 1024
+MIN_SLIDES, MAX_SLIDES = 2, 20
+MAX_CAPTION = 2200
+IMAGE_RE = re.compile(r"^(\d{2})\.png$")
+HASHTAG_RE = re.compile(r"(?<!\w)#[\w]+", re.UNICODE)
+SECTION_RE = re.compile(r"^(?:CAPTION INSTAGRAM|HASHTAGS?|FONTI CONSULTABILI|NOTA EDITORIALE(?:\s*\(.*\))?)$", re.IGNORECASE)
+DEFAULT_HASHTAGS = {
+    "buona": ("#NotiziePositive", "#BuoneNotizie", "#Notizie"),
+    "cattiva": ("#Notizie", "#Attualita", "#Mondo"),
+    "curiosita": ("#Misteri", "#Curiosita", "#Cultura"),
+}
 
 
 class PublisherError(RuntimeError):
@@ -52,42 +62,150 @@ def _image_size(path: Path) -> tuple[int, int]:
     return width, height
 
 
-def _check_sources(path: Path) -> list[str]:
-    if not path.is_file():
-        raise PublisherError(f"Manca sources.txt in {path.parent.name}")
-    urls = [line.strip() for line in path.read_text(encoding="utf-8-sig").splitlines()
-            if line.strip() and not line.lstrip().startswith("#")]
+def _check_urls(urls: list[str], origin: str) -> list[str]:
     if len(urls) < 2:
-        raise PublisherError(f"Servono almeno due link alle fonti in {path}")
+        raise PublisherError(f"Servono almeno due link alle fonti in {origin}")
     hosts: set[str] = set()
     for url in urls:
         parsed = urllib.parse.urlparse(url)
         host = (parsed.hostname or "").lower().removeprefix("www.")
         if parsed.scheme != "https" or not host or "." not in host or parsed.username or parsed.password:
-            raise PublisherError(f"Fonte non HTTPS o non valida in {path}")
+            raise PublisherError(f"Fonte non HTTPS o non valida in {origin}")
         hosts.add(host)
     if len(hosts) < 2:
-        raise PublisherError(f"Indicare fonti di almeno due domini differenti: {path}")
-    # Due domini diversi non garantiscono in sé indipendenza o accuratezza.
+        raise PublisherError(f"Indicare fonti di almeno due domini differenti: {origin}")
+    # Questo controlla solo il formato, non l'accuratezza degli articoli.
     return urls
+
+
+def _check_sources(path: Path) -> list[str]:
+    if not path.is_file():
+        raise PublisherError(f"Manca sources.txt in {path.parent.name}")
+    urls = [line.strip() for line in path.read_text(encoding="utf-8-sig").splitlines()
+            if line.strip() and not line.lstrip().startswith("#")]
+    return _check_urls(urls, str(path))
+
+
+def _slides(folder: Path) -> list[Path]:
+    files = list(folder.glob("*.png"))
+    unnumbered = [f.name for f in files if not IMAGE_RE.fullmatch(f.name)]
+    if unnumbered:
+        raise PublisherError(f"Nome immagine non valido in {folder.name}: {', '.join(sorted(unnumbered))}")
+    count = len(files)
+    if not MIN_SLIDES <= count <= MAX_SLIDES:
+        raise PublisherError(f"{folder.name}: il carosello richiede da {MIN_SLIDES} a {MAX_SLIDES} immagini PNG")
+    images = [folder / f"{i:02d}.png" for i in range(1, count + 1)]
+    if set(files) != set(images):
+        raise PublisherError(f"Numerazione delle immagini non consecutiva in {folder.name}: usare 01.png, 02.png, ...")
+    for path in images:
+        _image_size(path)
+    return images
+
+
+def _compose_caption(description: str, tags: list[str], category: str) -> str:
+    description = description.strip()
+    if not description:
+        raise PublisherError("La descrizione Instagram e' vuota")
+    # Il bot assembla soltanto testi verificati e hashtag espliciti; non inventa fatti.
+    existing = {tag.casefold() for tag in HASHTAG_RE.findall(description)}
+    extra = []
+    for tag in tags:
+        if not HASHTAG_RE.fullmatch(tag):
+            raise PublisherError(f"Hashtag non valido: {tag!r}")
+        if tag.casefold() not in existing:
+            extra.append(tag)
+            existing.add(tag.casefold())
+    if not existing:
+        extra = list(DEFAULT_HASHTAGS[category])
+    result = description + ("\n\n" + " ".join(extra) if extra else "")
+    if not 30 <= len(result) <= MAX_CAPTION:
+        raise PublisherError(f"La didascalia deve contenere 30-{MAX_CAPTION} caratteri (attuali: {len(result)})")
+    return result
+
+
+def _section(lines: list[str], title: str) -> str:
+    found = False
+    collected: list[str] = []
+    for line in lines:
+        stripped = line.strip()
+        if SECTION_RE.fullmatch(stripped):
+            if found:
+                break
+            if stripped.casefold() == title.casefold():
+                found = True
+            continue
+        if found and not re.fullmatch(r"=+", stripped):
+            collected.append(line)
+    if not found:
+        raise PublisherError(f"Sezione {title} mancante nel testo editoriale")
+    return "\n".join(collected).strip()
+
+
+def parse_editorial(path: Path, category: str) -> tuple[str, list[str]]:
+    text = path.read_text(encoding="utf-8-sig")
+    lines = text.splitlines()
+    description = _section(lines, "CAPTION INSTAGRAM")
+    hashtag_lines = _section(lines, "HASHTAG")
+    tags = HASHTAG_RE.findall(hashtag_lines)
+    source_text = _section(lines, "FONTI CONSULTABILI")
+    urls = [u.rstrip(".,;") for u in re.findall(r"https://[^\s<>]+", source_text)]
+    caption = _compose_caption(description, tags, category)
+    return caption, urls
+
+
+def _from_editorial(path: Path, category: str) -> tuple[str, list[str]]:
+    caption, urls = parse_editorial(path, category)
+    return caption, _check_urls(urls, path.name)
+
+
+def compose_editorial(path: Path, category: str, out: Path | None = None) -> None:
+    if category not in CATEGORIES:
+        raise PublisherError(f"Categoria non supportata: {category}")
+    if not path.is_file():
+        raise PublisherError(f"File editoriale non trovato: {path}")
+    caption, urls = parse_editorial(path, category)
+    print("=== DIDASCALIA INSTAGRAM ===")
+    print(caption)
+    print("\n=== FONTI INDICATE NEL FILE ===")
+    for url in urls:
+        print(url)
+    try:
+        _check_urls(urls, path.name)
+        print("\nControllo formale dei riferimenti: OK (non e' un fact-check)")
+    except PublisherError as exc:
+        print(f"\nATTENZIONE: {exc}. Correggere le fonti prima della pubblicazione.")
+    if out is not None:
+        if out.exists() and any((out / name).exists() for name in ("caption.txt", "sources.txt")):
+            raise PublisherError("File di destinazione gia' presenti: non sovrascrivo caption.txt o sources.txt")
+        out.mkdir(parents=True, exist_ok=True)
+        (out / "caption.txt").write_text(caption + "\n", encoding="utf-8")
+        (out / "sources.txt").write_text("\n".join(urls) + "\n", encoding="utf-8")
+        print("Caption e fonti esportate in:", out)
+
+
+def _post_text(folder: Path, category: str) -> tuple[str, list[str]]:
+    caption_path, sources_path = folder / "caption.txt", folder / "sources.txt"
+    if caption_path.exists() or sources_path.exists():
+        # Modalita' semplice: due file precompilati, piu' hashtags.txt facoltativo.
+        if not caption_path.is_file() or not sources_path.is_file():
+            raise PublisherError(f"{folder.name}: servono sia caption.txt sia sources.txt")
+        tags_path = folder / "hashtags.txt"
+        tags = HASHTAG_RE.findall(tags_path.read_text(encoding="utf-8-sig")) if tags_path.is_file() else []
+        return _compose_caption(caption_path.read_text(encoding="utf-8-sig"), tags, category), _check_sources(sources_path)
+    # Modalita' editoriale: riutilizza direttamente il TXT del Template.zip.
+    # La nota editoriale e le spiegazioni delle slide non confluiscono nel post.
+    files = sorted(folder.glob("*.txt"))
+    if len(files) != 1:
+        raise PublisherError(f"{folder.name}: inserire caption.txt + sources.txt oppure un solo TXT editoriale")
+    return _from_editorial(files[0], category)
 
 
 def inspect_post(folder: Path) -> dict:
     match = NAME_RE.fullmatch(folder.name)
     if not match:
         raise PublisherError(f"Nome cartella non valido: {folder.name} (es. 001_buona_esempio)")
-    images = [folder / f"0{i}.png" for i in (1, 2, 3)]
-    for path in images:
-        _image_size(path)
-    caption_path = folder / "caption.txt"
-    if not caption_path.is_file():
-        raise PublisherError(f"Manca caption.txt in {folder.name}")
-    caption = caption_path.read_text(encoding="utf-8-sig").strip()
-    if not 30 <= len(caption) <= 2200:
-        raise PublisherError(f"La didascalia di {folder.name} deve contenere 30–2200 caratteri")
-    if "#" not in caption:
-        raise PublisherError(f"La didascalia di {folder.name} non contiene hashtag")
-    sources = _check_sources(folder / "sources.txt")
+    images = _slides(folder)
+    caption, sources = _post_text(folder, match.group(2))
     return {"id": folder.name, "sequence": int(match.group(1)), "category": match.group(2),
             "images": images, "caption": caption, "sources": sources}
 
@@ -138,7 +256,7 @@ def print_plan() -> None:
         print(f"BLOCCATO: {exc}")
         return
     if chosen:
-        print(f"Prossimo: {chosen['id']} | categoria: {chosen['category']} | 3 PNG | fonti: {len(chosen['sources'])}")
+        print(f"Prossimo: {chosen['id']} | categoria: {chosen['category']} | {len(chosen['images'])} PNG | fonti: {len(chosen['sources'])}")
     else:
         print("Non ci sono nuovi caroselli pronti da pubblicare")
 
@@ -219,8 +337,8 @@ def _channel(token: str) -> str:
 
 
 def build_mutation(*, caption: str, channel_id: str, urls: list[str]) -> str:
-    if len(urls) != 3 or any(not u.startswith("https://") for u in urls):
-        raise PublisherError("Il carosello richiede tre URL HTTPS")
+    if not MIN_SLIDES <= len(urls) <= MAX_SLIDES or any(not u.startswith("https://") for u in urls):
+        raise PublisherError(f"Il carosello richiede da {MIN_SLIDES} a {MAX_SLIDES} URL HTTPS")
     assets = ", ".join("{image: {url: " + json.dumps(u) + "}}" for u in urls)
     return ("mutation { createPost(input: {text: " + json.dumps(caption, ensure_ascii=False)
             + " channelId: " + json.dumps(channel_id) + " schedulingType: automatic mode: shareNow assets: ["
@@ -284,6 +402,12 @@ def main(argv: list[str] | None = None) -> int:
     cmd = parser.add_subparsers(dest="command", required=True)
     cmd.add_parser("validate", help="Controlla ogni post e la sua struttura senza chiamate API")
     cmd.add_parser("plan", help="Mostra la prossima pubblicazione senza chiamate API")
+    caption_cmd = cmd.add_parser("caption", help="Mostra la didascalia completa generata per un carosello")
+    caption_cmd.add_argument("--post", required=True, help="Nome completo della cartella in coda")
+    compose_cmd = cmd.add_parser("compose", help="Assembla una caption con hashtag dal TXT editoriale, senza immagini o API")
+    compose_cmd.add_argument("--file", required=True, type=Path)
+    compose_cmd.add_argument("--category", required=True, choices=sorted(CATEGORIES))
+    compose_cmd.add_argument("--out", type=Path, help="Esporta caption.txt e sources.txt nella cartella indicata")
     reserve_cmd = cmd.add_parser("reserve", help="Prenota un post prima di inviarlo a Buffer")
     reserve_cmd.add_argument("--manual", action="store_true")
     send_cmd = cmd.add_parser("send", help="Invia una sola volta il post già riservato")
@@ -297,6 +421,15 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Validazione completata: {len(posts)} caroselli integri. Nessuna pubblicazione.")
         elif args.command == "plan":
             print_plan()
+        elif args.command == "caption":
+            item = next((x for x in scan_queue() if x["id"] == args.post), None)
+            if item is None:
+                raise PublisherError(f"Carosello non presente: {args.post}")
+            print(item["caption"])
+            print("\n--- Fonti registrate (non aggiunte alla didascalia) ---")
+            print("\n".join(item["sources"]))
+        elif args.command == "compose":
+            compose_editorial(args.file, args.category, args.out)
         elif args.command == "reserve":
             reserve(manual=args.manual)
         elif args.command == "send":
