@@ -1,0 +1,27 @@
+INSTAGRAM NEWS BOT - GUIDA RAPIDA
+================================
+
+1) Estrai il contenuto dello ZIP in una cartella Windows.
+2) Avvia IMPORTA_SU_GITHUB.bat (serve Git for Windows).
+3) Incolla il link del tuo repository, per esempio:
+   https://github.com/TUO_UTENTE/instagram-news-bot
+4) Accedi a GitHub se richiesto. Lo script carica i file nel repository.
+5) Vai al repository su GitHub > Actions.
+6) Verifica che il workflow "Controlli automatici" sia verde.
+7) Avvia "Verifica Buffer (solo lettura)" > Run workflow.
+8) Avvia "Instagram - esecuzione MANUALE" > Run workflow
+   kind: demo, publish: false.
+9) Vedrai due immagini demo sul tuo sito GitHub Pages.
+
+IMPORTANTISSIMO:
+- Non attivare ALLOW_PUBLISH.
+- Nessuna pubblicazione Instagram avviene con le impostazioni iniziali.
+- Il test demo non usa DeepSeek, quindi non consuma gli 0,08 euro.
+- Iniziare i test reali solo dopo aver controllato i risultati.
+- I segreti DeepSeek e Buffer rimangono nelle impostazioni GitHub.
+
+Se non hai Git for Windows puoi scaricarlo dal sito ufficiale https://git-scm.com/downloads/win
+In alternativa carica manualmente tutti i file estratti, cartella .github inclusa,
+tramite GitHub > Add file > Upload files.
+
+README.md contiene la guida completa e i limiti del controllo automatico delle fonti.
