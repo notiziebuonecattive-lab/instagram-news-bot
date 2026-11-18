@@ -1,0 +1,38 @@
+NOTIZIA 02 — CRISPR DIVENTA UNA TERAPIA APPROVATA
+CATEGORIA: Notizie Belle
+PERIODO DI RIFERIMENTO: 2023–2026
+
+TESTI DEL CAROSELLO
+===================
+
+SLIDE 1 — COPERTINA
+TITOLO: Il DNA si può modificare per curare una malattia
+TESTO: Una tecnologia premiata dalla ricerca è arrivata nelle terapie autorizzate: non è più soltanto un esperimento.
+
+SLIDE 2 — APPROFONDIMENTO
+TITOLO: Che cos’è Casgevy?
+TESTO: È un trattamento che modifica in laboratorio alcune cellule staminali del sangue del paziente con CRISPR/Cas9. Le cellule vengono poi reinfuse per contrastare gravi malattie ereditarie del sangue.
+
+SLIDE 3 — APPROFONDIMENTO
+TITOLO: Una svolta, con limiti precisi
+TESTO: La FDA ha autorizzato Casgevy nel 2023 per alcuni pazienti e nel 2026 ne ha esteso le indicazioni ai bambini dai due anni. È una terapia complessa, da effettuare in centri specializzati: non modifica qualsiasi DNA.
+
+CAPTION INSTAGRAM
+=================
+
+Per anni CRISPR è stata soprattutto una promessa: uno strumento capace di modificare in modo mirato il materiale genetico. Oggi esiste almeno una terapia basata su CRISPR approvata da un’autorità regolatoria. Casgevy utilizza cellule staminali ematopoietiche prelevate dal paziente, modificate in laboratorio e poi reinfuse. La FDA l’ha autorizzata inizialmente nel dicembre 2023 per alcuni pazienti con anemia falciforme; nel luglio 2026 ha ampliato le indicazioni per pazienti pediatrici selezionati dai due anni. È una svolta reale, ma il percorso terapeutico resta impegnativo e non adatto a tutte le persone con queste malattie. Una cosa è certa: l’editing genetico è già entrato nella medicina clinica.
+
+HASHTAG
+=======
+#CRISPR #Medicina #Biotecnologie #Genetica #Innovazione #Scienza #NotiziePositive #Ricerca
+
+FONTI CONSULTABILI
+==================
+- FDA, approvazione 2023
+  https://www.fda.gov/news-events/press-announcements/fda-approves-first-gene-therapies-treat-patients-sickle-cell-disease
+- FDA, estensione 1 luglio 2026
+  https://www.fda.gov/news-events/press-announcements/fda-approves-first-gene-therapy-young-children-sickle-cell-disease
+
+NOTA EDITORIALE (NON PUBBLICARE)
+===============================
+Non presentarla come trattamento universale o banale.
