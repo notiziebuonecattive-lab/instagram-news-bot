@@ -1,8 +1,12 @@
 {
-    "posts":  {
-
-              },
-    "slots":  {
-
-              }
+  "posts": {
+    "001_buona_terapia_genetica_cps1": {
+      "status": "reserved",
+      "reserved_at": "2026-11-19T00:35:02.643239+01:00",
+      "slot": "2026-11-19"
+    }
+  },
+  "slots": {
+    "2026-11-19": "001_buona_terapia_genetica_cps1"
+  }
 }
