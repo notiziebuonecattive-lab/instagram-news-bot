@@ -1,63 +1,69 @@
-# Instagram News Bot
+# Instagram News Bot V3 — caroselli con template approvati
 
-**AGGIORNAMENTO 18/11/2026**
+**NOVITÀ:** Usa i due template PNG dell'utente in 3 palette (verde, rosso, celeste). Ogni post crea 3 immagini 1080×1350: copertina, "Che cosa sappiamo", "Contesto e fonti". Le foto si inseriscono sotto ai template, il testo sopra. `Buffer` riceve un elenco ordinato di tre immagini nella stessa richiesta. Il calendario resta **DISATTIVATO** e `ALLOW_PUBLISH=false` resta il valore di sicurezza.
 
-Questo pacchetto include i 3 template definitivi approvati dall'utente in `assets/templates/`:
-- `template_buone.png`
-- `template_cattive.png`
-- `template_curiosita.png`
+### Prima di pubblicare
+1. Carica il contenuto dello ZIP **nella root del repository**, sovrascrivendo la vecchia versione.
+2. Da Actions esegui prima `Controlli automatici` e poi `Instagram - esecuzione MANUALE` con `kind=demo` e `publish=false`.
+3. Controlla la grafica del carosello (9 PNG: 3 caroselli di esempio). I crediti delle demo sono sintetici.
+4. Solo dopo controlla un caso live con `publish=false`, che consuma credito DeepSeek.
+5. Solo con approvazione esplicita imposta la variabile `ALLOW_PUBLISH=true` per un test reale di pubblicazione.
 
-Include anche una anteprima 1:1 del risultato desiderato: `assets/templates/anteprima_1a1.png`.
+**I file dei template sono disponibili in** `assets/templates/`. Nel repository non devono essere incluse chiavi API.
 
-**DOVE CARICARLO:** estrai lo ZIP e carica **tutto il contenuto della cartella** nella **root** del repository GitHub `instagram-news-bot`.
+---
 
-Una bella e una brutta notizia a settimana: grafica originale, fonti consultabili, pubblicazione via Buffer. Tutto in italiano, senza n8n e senza server permanente.
+# Instagram News Bot — versione 2 (tre categorie con fotografie)
 
-**STATO INIZIALE: SOLO TEST. NON C'È ALCUNA PUBBLICAZIONE AUTOMATICA.**
+Bot Instagram minimalista in italiano: **Notizie Buone** (verde pastello), **Notizie Cattive** (rosso pastello), **Curiosità** (celeste). Ogni post ha una **fotografia**, un **riquadro scuro** con titolo e sottotitolo e una descrizione con link alle fonti.
 
-## Cosa viene fatto e cosa no
+**CONSEGNA IN SICUREZZA:** inizialmente funziona SOLO in modalità demo. Non c'è un calendario attivo, né è possibile pubblicare senza abilitare volontariamente due controlli. 
 
-- `demo`: crea due PNG 1080×1350 e il sito delle fonti, senza chiamare DeepSeek o Buffer.
-- `positive` / `negative`: DeepSeek cerca una notizia sul web (costo API), il programma verifica due articoli di editori diversi, le date, la disponibilità dei testi e chiede una seconda conferma al modello. Se manca un elemento, **non pubblica**.
-- Solo con `publish=true` **e** Repository Variable `ALLOW_PUBLISH=true`: registra la notizia come `reserved`, pubblica l'immagine su GitHub Pages, controlla che sia online e chiama **una volta sola** l'API Buffer `shareNow`. La conferma di Buffer non certifica che Instagram abbia effettivamente mostrato il post: controllare Buffer/Instagram.
-- Non esegue automaticamente il calendario finché non viene aggiunto il trigger `schedule`.
+## Architettura
 
-### Limiti della verifica delle notizie
+- **Python + Pillow:** grafica 1080 × 1350, generata senza servizi esterni a pagamento.
+- **DeepSeek Flash:** ricerca le notizie e produce testi italiani con citazioni (richiede saldo API); viene interrogato una seconda volta sul contenuto degli articoli. Non garantisce una verifica giornalistica umana.
+- **Wikimedia Commons:** cerca una fotografia *illustrativa* pertinente, analizza licenza/crediti e scarica solo foto con una licenza accettata (`CC0`, dominio pubblico, oppure `CC BY`; `CC BY-SA` esclusa per evitare obblighi sui derivati). Se non trova una foto idonea, **non crea il post**. I metadati e le autorizzazioni restano da controllare sui casi reali: l'automazione non esclude dichiarazioni erronee degli uploader o diritti della personalità.
+- **GitHub Pages:** ospita le immagini e il sito archivio con fonti e attribuzione della foto, collegabile alla bio.
+- **Buffer GraphQL:** invia a Instagram un'immagine pubblicamente raggiungibile; le API e le autorizzazioni devono essere verificate con un test reale.
+- **GitHub Actions:** prepara le demo e, soltanto dopo l'attivazione esplicita, consente di creare e inviare post reali.
 
-Due editori/domini diversi e due URL funzionanti **non garantiscono** indipendenza editoriale o veridicità. La seconda lettura automatica è un filtro utile, non un fact-checker infallibile. Siti paywall o bloccati e notizie senza data verificabile vengono scartati; quindi il sistema può saltare una settimana. Evitare la pubblicazione completamente autonoma finché non si è verificata la qualità su vari casi reali.
+## Calendario predisposto (ancora disattivato)
 
-## Configurazione, dopo l'importazione su GitHub
+Rimangono **due post alla settimana**, martedì e venerdì alle **12:00 Europe/Rome**. Le tre categorie ruotano fra gli slot consecutivi (buone → cattive → curiosità → buone...). Non viene pubblicata una notizia di ogni categoria ogni settimana; per quello servirebbero tre slot.
 
-1. Repository pubblico `instagram-news-bot`, GitHub Pages Source **GitHub Actions**.
-2. In `Settings → Secrets and variables → Actions → Secrets`: già creati `DEEPSEEK_API_KEY` e `BUFFER_API_KEY`. Non copiarli mai nei file.
-3. In `Settings → Secrets and variables → Actions → Variables`: **non creare per ora** `ALLOW_PUBLISH`, oppure lasciarla `false` (valore predefinito). Se Buffer ha più canali Instagram, creare `BUFFER_CHANNEL_ID` con l'ID esatto restituito dalla API.
-4. Aprire scheda `Actions`. Lanciare prima **Controlli automatici**, poi **Verifica Buffer (solo lettura)** tramite `Run workflow`.
-5. Lanciare **Instagram - esecuzione MANUALE**, `kind=demo`, `publish=false`. Si ottiene un URL GitHub Pages con due immagini chiaramente marcate DEMO, senza usare il credito DeepSeek.
-6. Solo quando la demo è confermata, fare **una** ricerca `kind=positive`, `publish=false` (può spendere una parte degli 0,08 € disponibili). Se i controlli bloccano il processo, leggere il motivo nei log, senza forzarlo.
-7. Per attivare un post reale, impostare **volontariamente** Repository Variable `ALLOW_PUBLISH=true` e scegliere `publish=true` su un'esecuzione live. Se non vuoi ancora pubblicare, NON attivarla.
-8. Dopo la verifica manuale di diverse notizie, si potrà valutare l'aggiunta del calendario automatico (vedi sotto).
+Lo scheduler è **commentato** in `.github/workflows/instagram.yml` e viene ignorato finché non viene attivato volutamente.
 
-**NOTA:** le immagini di anteprima generate in esecuzioni non pubblicate sono visibili sul sito Pages di quella esecuzione, ma non vengono salvate nel repository. Gli articoli riservati per la pubblicazione vengono invece registrati nei file `data/state.json` e `site/posts/` tramite commit automatico.
+## Importazione nel repository GitHub già creato
 
-## Esito incerto e doppioni
+1. Scaricare ed estrarre lo ZIP completo.
+2. Fare doppio clic su **`IMPORTA_SU_GITHUB.bat`** dalla cartella estratta (richiede **Git for Windows**). Inserire l'URL `https://github.com/TUO_UTENTE/instagram-news-bot`. Se i file sono già presenti, lo script aggiornerà il repository.
+3. I due GitHub Secrets predisposti (`DEEPSEEK_API_KEY`, `BUFFER_API_KEY`) **restano su GitHub**. Non sono contenuti nello ZIP e non devono essere incollati nei file.
+4. In `Settings → Pages → Build and deployment → Source` verificare `GitHub Actions`.
+5. **Non** aggiungere o attivare la variabile `ALLOW_PUBLISH`; il suo valore predefinito è `false`.
+6. Aprire `Actions`, controllare `Controlli automatici (nessuna pubblicazione)` e scaricare l'artifact `preview-instagram` per vedere tutte e tre le anteprime.
+7. Avviare con `Run workflow` **Verifica Buffer (solo lettura)**. Il bot recupera il canale ma non crea alcun post.
+8. Avviare manualmente **Instagram - esecuzione MANUALE**, `kind=demo`, `publish=false`: aggiorna GitHub Pages con tre anteprime; non chiama DeepSeek e non invia a Buffer.
+9. Solo dopo il controllo delle immagini e del collegamento Buffer, provare una ricerca reale con `kind=positive`, `publish=false`. Può consumare il credito DeepSeek e accedere a Wikimedia Commons; con €0,08 disponibili valutare attentamente se farla.
+10. **Non attivare il calendario o ALLOW_PUBLISH prima che i test reali, con immagini e fonti, siano stati controllati.**
 
-Il bot usa `concurrency` GitHub Actions, tiene lo storico nel repository ed esegue un commit di prenotazione **prima** della scrittura su Buffer. Non ritenta le mutazioni Buffer dopo timeout: se l'invio ha esito incerto, lo stato resta `reserved` e il controllo deve essere manuale. Non cancellare a caso le riserve: prima vedere se il post esiste su Buffer e Instagram.
+> Se il repository non è accessibile da questa chat, lo ZIP è il metodo più sicuro per importare il progetto senza condividere chiavi. Il file `.bat` e lo script `.ps1` possono essere aperti con Blocco note prima dell'utilizzo.
 
-Se GitHub Pages non fornisce una URL pubblica raggiungibile, il bot **non** invia il post a Buffer. GitHub Actions può saltare/ritardare eventi pianificati; non è un servizio di pubblicazione con SLA garantiti.
+## Cosa viene verificato
 
-## Attivare il calendario (solo in futuro)
+Per le notizie reali: due editori su domini differenti, link HTTPS, testi raggiungibili, date di pubblicazione dichiarate e trovate sulla pagina, assenza di titoli/sorgenti già usati, controllo LLM della corrispondenza del testo alle due fonti. Per notizie positive e negative vengono richiesti articoli recenti (fino a 10 giorni); per le curiosità è consentita una finestra fino a **90 giorni** per includere divulgazione scientifica non immediata.
 
-Dopo aver stabilizzato il sistema, aggiungere all'evento `on` del file `.github/workflows/instagram.yml`:
+**Limiti importanti:** due domini differenti non garantiscono la reale indipendenza degli articoli; alcuni siti bloccano l'accesso automatizzato e le notizie potrebbero non essere rilevate; Wikimedia può fornire foto genericamente pertinenti ma non riferite all'evento. La foto viene indicata come *illustrativa*, sia su Instagram sia sul sito. Se una verifica fallisce, il post è saltato.
 
-```yaml
-  schedule:
-    - cron: '0 12 * * 2,5'
-      timezone: 'Europe/Rome'
-```
+## Controlli sulla pubblicazione
 
-Il workflow riconosce automaticamente i giorni: martedì = notizia positiva, venerdì = notizia negativa. Per far funzionare la pianificazione serve **anche** impostare `ALLOW_PUBLISH=true` dopo i test (ed essere consapevoli che questo autorizzerà la pubblicazione). GitHub Actions potrebbe ritardare o saltare una corsa programmata. Prima di attivare la schedule, usare almeno una pubblicazione controllata e verificare i post nell'app Instagram.
+- Demo e anteprime non possono essere pubblicate.
+- Una pubblicazione reale richiede **sia** `publish=true` nel lancio manuale **sia** la GitHub Actions Variable `ALLOW_PUBLISH=true`.
+- Il bot salva la notizia come `reserved` nel repository **prima** di effettuare una richiesta `createPost` a Buffer, controlla che la PNG sia online via GitHub Pages, poi invia **una sola richiesta** a Buffer.
+- Uno stato `sent_to_buffer` **non significa** che Instagram abbia effettivamente pubblicato. Per gli errori/tentativi incerti verificare manualmente Buffer prima di riprovare.
+- Lo storico dei post è conservato in `data/state.json`. GitHub Actions usa un lock `concurrency` per evitare esecuzioni simultanee.
 
-## Sviluppo locale
+## Esecuzione locale senza credenziali
 
 ```bash
 python -m pip install -r requirements-dev.txt
@@ -65,27 +71,24 @@ python -m pytest -q
 python -m newsbot.cli prepare --kind demo
 ```
 
-L'anteprima statica viene generata nella cartella `site/`. Non è necessario configurare segreti per le demo. `payload.json` non viene versionato.
+Le tre fotografie **demo** provengono dalle immagini sintetiche progettate durante questa conversazione. Sono soltanto elementi illustrativi e sono chiaramente marcate `SOLO DEMO`. In nessun caso la demo le invia a Instagram.
 
-## Architettura
+## Struttura del codice
 
-- `newsbot/deepseek.py`: richiesta DeepSeek web + controllo del testo rispetto alle due fonti.
-- `newsbot/verify.py`: controlli di forma, fonti, date e deduplicazione.
-- `newsbot/render.py`: due template Pillow originali, nessuna fotografia esterna.
-- `newsbot/buffer.py`: lettura canali e singolo invio GraphQL `shareNow`.
-- `newsbot/site.py`: pagina pubblica con fonti e archivio consultabili, da linkare nella bio.
-- `data/state.json`: registro persistente su GitHub.
-- `.github/workflows/ci.yml`: test e anteprima, nessuna credenziale.
-- `.github/workflows/check-buffer.yml`: sola lettura Buffer, nessuna pubblicazione.
-- `.github/workflows/instagram.yml`: esecuzione manuale, blocco doppio per pubblicazione.
+- `newsbot/cli.py`: flusso completo; demo, preparazione, registrazione, invio, scelta slot.
+- `newsbot/deepseek.py`: ricerca web e verifica via DeepSeek.
+- `newsbot/verify.py`: validazione strutturale/fonti/date/duplicati.
+- `newsbot/photos.py`: selezione foto Wikimedia Commons con attribuzione e controllo licenza.
+- `newsbot/render.py`: tre template Pillow fedeli alla struttura grafica approvata.
+- `newsbot/site.py`: archivio pubblico con fonti e crediti fotografici.
+- `newsbot/buffer.py`: GraphQL Buffer.
+- `.github/workflows/ci.yml`: test e artifact con 3 anteprime.
+- `.github/workflows/check-buffer.yml`: sola lettura.
+- `.github/workflows/instagram.yml`: pubblicazione manuale bloccata di default; schedule commentato.
 
 ## Documentazione ufficiale
 
 - DeepSeek web tools: https://api-docs.deepseek.com/guides/web_tools/
-- Buffer GraphQL image post: https://developers.buffer.com/examples/create-image-post.html
-- Buffer channel retrieval: https://developers.buffer.com/guides/data-model
-- GitHub Pages con Actions: https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages
-
-## Importare da Windows senza usare terminali complessi
-
-Dopo aver estratto lo ZIP, apri la cartella e fai doppio clic su **`IMPORTA_SU_GITHUB.bat`**. Incolla l'URL completo del tuo repository e segui la finestra di autenticazione GitHub, se appare. Serve **Git for Windows** installato; lo script non legge le chiavi API. Puoi aprire i due file `.bat` e `.ps1` in Blocco note per controllare cosa fanno. Alternativa: caricare manualmente i file estratti (compresa la cartella `.github`) con GitHub → Add file → Upload files.
+- Buffer image post: https://developers.buffer.com/examples/create-image-post.html
+- GitHub Actions schedule e timezone: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+- Wikimedia Commons metadati/licenze: https://commons.wikimedia.org/wiki/Commons:Machine-readable_data

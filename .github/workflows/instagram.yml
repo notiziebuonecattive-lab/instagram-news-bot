@@ -6,14 +6,15 @@ name: Instagram - esecuzione MANUALE (pubblicazione bloccata di default)
 #   schedule:
 #     - cron: '0 12 * * 2,5'
 #       timezone: 'Europe/Rome'
+# Le tre categorie vengono ruotate fra i due slot settimanali.
 on:
   workflow_dispatch:
     inputs:
       kind:
-        description: 'Demo gratuita, oppure ricerca live positiva/negativa (consuma credito)'
+        description: 'Demo gratuita o ricerca reale positiva/negativa/curiosita (consuma credito)'
         required: true
         type: choice
-        options: [demo, positive, negative]
+        options: [demo, positive, negative, curiosity]
         default: demo
       publish:
         description: 'INVIA A BUFFER (richiede anche Variable ALLOW_PUBLISH=true)'
@@ -60,12 +61,10 @@ jobs:
           KIND="$KIND_REQUESTED"
           DO_PUBLISH="$REQUEST_PUBLISH"
           if [[ "$KIND" == "auto" ]]; then
-            DAY=$(TZ=Europe/Rome date +%u)
-            case "$DAY" in
-              2) KIND="positive" ;;
-              5) KIND="negative" ;;
-              *) echo 'Giorno non previsto: stop' >&2; exit 1 ;;
-            esac
+            KIND=$(python -m newsbot.cli choose-kind)
+            if [[ -z "$KIND" ]]; then
+              echo 'Impossibile determinare categoria automatica' >&2; exit 1
+            fi
             DO_PUBLISH="true"
           fi
           if [[ "$DO_PUBLISH" == "true" && "$ALLOW_PUBLISH" != "true" ]]; then

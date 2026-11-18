@@ -85,7 +85,7 @@ def _published(soup: BeautifulSoup) -> date | None:
     return None
 
 
-def fetch_article(url: str, *, today: date | None = None, session=None) -> dict:
+def fetch_article(url: str, *, today: date | None = None, session=None, max_age_days: int = 10) -> dict:
     today = today or date.today()
     url = safe_https_url(url)
     session = session or requests.Session()
@@ -123,7 +123,7 @@ def fetch_article(url: str, *, today: date | None = None, session=None) -> dict:
     finally:
         response.close()
     published = _published(soup)
-    if not published or not (today - timedelta(days=10) <= published <= today + timedelta(days=1)):
+    if not published or not (today - timedelta(days=max_age_days) <= published <= today + timedelta(days=1)):
         raise ValidationError("Data di pubblicazione non verificabile o troppo vecchia")
     for element in soup(["script", "style", "nav", "footer", "header", "aside"]):
         element.decompose()
@@ -156,8 +156,18 @@ def validate_structure(story: dict, kind: str, state: dict, *, today: date | Non
         raise ValidationError("Titolo mancante o troppo lungo")
     if not isinstance(summary, str) or not 70 <= len(summary.split()) <= 185:
         raise ValidationError("Didascalia fuori limiti (70–185 parole)")
+    if kind not in ("positive", "negative", "curiosity"):
+        raise ValidationError("Categoria sconosciuta")
+    max_age = 90 if kind == "curiosity" else 14
+    max_source_age = 90 if kind == "curiosity" else 10
+    teaser = story.get("teaser", "")
+    if not isinstance(teaser, str) or not 15 <= len(teaser.strip()) <= 105:
+        raise ValidationError("Sottotitolo breve mancante o troppo lungo")
+    keywords = story.get("photo_keywords", "")
+    if not isinstance(keywords, str) or not 4 <= len(keywords.strip()) <= 90 or len(keywords.split()) < 2:
+        raise ValidationError("Parole chiave della fotografia mancanti")
     edate = _parse_date(story.get("event_date"))
-    if not edate or not (today - timedelta(days=14) <= edate <= today + timedelta(days=1)):
+    if not edate or not (today - timedelta(days=max_age) <= edate <= today + timedelta(days=1)):
         raise ValidationError("Data della notizia non recente")
     sources = story.get("sources")
     if not isinstance(sources, list) or len(sources) < 2:
@@ -176,7 +186,7 @@ def validate_structure(story: dict, kind: str, state: dict, *, today: date | Non
         if len(publisher) < 3:
             raise ValidationError("Nome dell'editore mancante")
         supplied_date = _parse_date(source.get("published_at"))
-        if not supplied_date or not (today - timedelta(days=10) <= supplied_date <= today + timedelta(days=1)):
+        if not supplied_date or not (today - timedelta(days=max_source_age) <= supplied_date <= today + timedelta(days=1)):
             raise ValidationError("Data della fonte mancante o troppo vecchia")
         clean_sources.append({"url": url, "publisher": publisher, "published_at": supplied_date.isoformat()})
     tags = story.get("hashtags")
@@ -185,7 +195,7 @@ def validate_structure(story: dict, kind: str, state: dict, *, today: date | Non
         raise ValidationError("Hashtag non validi")
     result = {"headline": headline.strip(), "summary": summary.strip(),
               "event_date": edate.isoformat(), "sources": clean_sources,
-              "hashtags": tags, "kind": kind}
+              "hashtags": tags, "kind": kind, "teaser": teaser.strip(), "photo_keywords": keywords.strip()}
     ensure_not_duplicate(result, state)
     digest = hashlib.sha256((kind + ":" + clean_sources[0]["url"].split('?')[0]).encode()).hexdigest()[:16]
     result["id"] = digest
@@ -197,7 +207,7 @@ def validate_structure(story: dict, kind: str, state: dict, *, today: date | Non
 def check_sources(story: dict, *, today: date | None = None) -> list[dict]:
     checked = []
     for s in story["sources"]:
-        data = fetch_article(s["url"], today=today)
+        data = fetch_article(s["url"], today=today, max_age_days=90 if story["kind"] == "curiosity" else 10)
         claimed = _parse_date(s["published_at"])
         actual = _parse_date(data["published_at"])
         if abs((claimed - actual).days) > 2:

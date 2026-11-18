@@ -47,20 +47,27 @@ def instagram_channel() -> dict:
     return matches[0]
 
 
-def share_now(*, text: str, image_url: str, channel_id: str) -> str:
-    if not image_url.startswith("https://"):
-        raise BufferError("L'immagine deve essere pubblica via HTTPS")
-    # Valori codificati come stringhe GraphQL, mai concatenati senza escaping.
+def share_now(*, text: str, channel_id: str, image_url: str | None = None, image_urls: list[str] | None = None) -> str:
+    """Invia un intero carosello in una sola mutazione GraphQL, senza retry.
+
+    image_url resta per compatibilità con i test legacy; produzione usa image_urls.
+    """
+    urls = image_urls if image_urls is not None else [image_url]
+    if not isinstance(urls, list) or not 1 <= len(urls) <= 10:
+        raise BufferError("Il carosello deve contenere 1-10 immagini")
+    if not all(isinstance(u, str) and u.startswith("https://") and len(u) < 2048 for u in urls):
+        raise BufferError("Le immagini devono avere URL HTTPS validi")
+    assets = "[" + ", ".join("{image: {url: " + json.dumps(u) + "}}" for u in urls) + "]"
     query = ("mutation { createPost(input: { text: " + json.dumps(text, ensure_ascii=False)
              + " channelId: " + json.dumps(channel_id)
-             + " schedulingType: automatic mode: shareNow assets: [{image: {url: "
-             + json.dumps(image_url) + "}}] }) {"
+             + " schedulingType: automatic mode: shareNow assets: "
+             + assets + " }) {"
              " ... on PostActionSuccess { post { id text } }"
              " ... on MutationError { message } } }")
     outcome = graphql(query).get("createPost") or {}
     if outcome.get("message"):
-        raise BufferError("Buffer non ha accettato il post: " + str(outcome["message"])[:200])
+        raise BufferError("Buffer non ha accettato il carosello: " + str(outcome["message"])[:200])
     post_id = (outcome.get("post") or {}).get("id")
     if not post_id:
-        raise BufferError("Esito pubblicazione non confermato da Buffer")
+        raise BufferError("Esito invio non confermato da Buffer")
     return str(post_id)

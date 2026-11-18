@@ -1,28 +1,14 @@
-# Rapporto tecnico - 18 novembre 2026
+# Test Instagram News Bot V3
 
-## Verifiche eseguite in locale
+Verifica locale eseguita il 18 novembre 2026.
 
-- 17 test Pytest: **superati**.
-- Generazione di 2 immagini dimostrative PNG 1080 × 1350: **superata**.
-- Generazione della pagina web delle fonti: **superata**.
-- Parsing dei tre workflow GitHub Actions YAML: **superato**.
-- Gestione del blocco di pubblicazione, prenotazione e prevenzione doppio invio: **verificata con API simulate**.
-- Verifica della struttura delle notizie, fonti distinte, duplicati e date: **verificata con dati simulati**.
-- URL HTML e metadati dell'articolo: **testati con risposte simulate**.
+- `python -m pytest -q` → **26 test superati**.
+- `python -m newsbot.cli prepare --kind demo` → tre caroselli, nove PNG 1080×1350 generati correttamente.
+- Ogni categoria usa il proprio template originale di copertina e pagine interne in tre palette, con trasparenze preservate.
+- Buffer carousel: una sola mutazione `createPost`, con 3 URL immagine in ordine, verificata con mock.
+- Blocco pubblicazione: `ALLOW_PUBLISH=true` e `publish=true` necessari; niente schedule automatico.
+- Verifiche con chiavi reali DeepSeek e Buffer non eseguite; nessuna chiamata a pagamento o pubblicazione reale.
+- La verifica dei fatti basata su fonti e modello riduce gli errori, ma non sostituisce il controllo umano.
+- **Da testare su GitHub Actions:** accesso effettivo DeepSeek, caricamento foto Wikimedia e pubblicazione dei caroselli su Buffer/Instagram, prima dell'automazione.
 
-## Non ancora verificato
-
-- Nessuna API DeepSeek reale è stata chiamata: il credito di 0,08 € è invariato.
-- Nessuna API Buffer reale è stata chiamata: la disponibilità dei permessi va controllata con il workflow di sola lettura.
-- Nessun test è stato eseguito direttamente sull'account Instagram.
-- Nessuna immagine è stata distribuita effettivamente sul GitHub Pages dell'utente.
-- La verifica di due siti diversi e del loro contenuto non è equivalente a una verifica giornalistica infallibile.
-- Il repository GitHub nuovo non era accessibile attraverso l'account GitHub connesso a questa chat: il progetto è consegnato come ZIP con importazione assistita.
-
-## Protezioni
-
-- Nessun calendario attivo nel workflow.
-- Nessuna mutazione Buffer nelle demo o nel workflow di controllo.
-- Scrittura Buffer solo con `ALLOW_PUBLISH=true` e richiesta esplicita.
-- Blocco di duplicati con stato di prenotazione salvato nel repository prima dell'invio.
-- Nessun ritentativo automatico dell'invio a Buffer quando l'esito potrebbe essere ambiguo.
+Documentazione API Buffer: https://developers.buffer.com/examples/create-image-post.html
