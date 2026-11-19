@@ -7,3 +7,6 @@ Fonti HTTPS: 2 di 2 domini. Controllo contenutistico con ricerca web; NON certif
 GRAFICA: immagini low-poly integrate nel template originale; controllo dimensioni e opacità effettuato. Controllo visuale tramite anteprima disponibile.
 
 19/11/2026 — Composizione completata su template trasparente, illustrazione low-poly unica riutilizzata nel carosello. Nota IA inserita nella caption. URL verificati formalmente (HTTPS/domìni); raggiungibilità e contenuto dei link non ricontrollati in questo passaggio.
+
+19/11/2026 — Revisione testi post-riordino coda: caption aggiornata per integrare note editoriali e precisazioni fattuali; immagini senza modifiche salvo slide esplicitamente indicate nel pacchetto. Mantenuta la fonte editoriale originale come archivio. Controlli automatici di formato, non certificazione scientifica integrale.
+Slide 01: titolo e/o spiegazione ricomposti con font Inter e misure dinamiche. Titolo: Morbillo: oltre 127 mila casi nel 2024. Corpo: Nel 2025 i casi sono poi scesi a circa 34 mila nella regione europea dell’OMS.

@@ -1,6 +1,4 @@
-Lo spazio vicino alla Terra non è vuoto. Decenni di lanci, esplosioni e collisioni hanno lasciato un’enorme popolazione di oggetti artificiali in orbita. Secondo il portale statistico dell’Agenzia spaziale europea, i modelli indicano circa 1,5 milioni di detriti fra uno e dieci centimetri. Si tratta di stime, non di singoli frammenti tutti identificati da radar. Il problema è che le velocità relative possono essere elevatissime: anche piccoli pezzi possono mettere in pericolo satelliti e missioni. Nuove regole per smaltire i veicoli a fine vita e progetti di rimozione attiva cercano di rendere l’attività spaziale più sostenibile. Il rischio non è fantascienza; è una questione tecnica molto concreta.
-
-Il dato sui circa 1,5 milioni di detriti da 1 a 10 cm è una stima modellistica ESA aggiornata al 2026.
+Milioni di frammenti artificiali orbitano attorno alla Terra dopo decenni di lanci, esplosioni e collisioni. Secondo i modelli dell’Agenzia spaziale europea, i detriti di dimensione compresa tra 1 e 10 centimetri sono circa 1,5 milioni (stima modellistica aggiornata al 2026), non oggetti tutti identificati e tracciati singolarmente. Le alte velocità rendono pericolosi anche pezzi relativamente piccoli. Regole per lo smaltimento dei satelliti a fine vita e progetti di rimozione attiva cercano di ridurre il rischio per le missioni future.
 
 Immagini illustrative generate con IA. Non sono fotografie documentarie.
 

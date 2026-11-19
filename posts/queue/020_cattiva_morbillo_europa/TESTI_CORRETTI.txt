@@ -1,0 +1,7 @@
+POST 020_cattiva_morbillo_europa
+
+SLIDE 1
+TITOLO: Morbillo: oltre 127 mila casi nel 2024
+TESTO: Nel 2025 i casi sono poi scesi a circa 34 mila nella regione europea dell’OMS.
+
+Le altre slide restano invariate.

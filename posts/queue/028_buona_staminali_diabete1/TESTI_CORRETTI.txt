@@ -1,0 +1,7 @@
+POST 028_buona_staminali_diabete1
+
+SLIDE 1
+TITOLO: Cellule trapiantate hanno prodotto insulina
+TESTO: Uno studio sperimentale apre nuove possibilità per il diabete di tipo 1.
+
+Le altre slide restano invariate.

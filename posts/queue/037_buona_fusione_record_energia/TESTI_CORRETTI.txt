@@ -1,0 +1,7 @@
+POST 037_buona_fusione_record_energia
+
+SLIDE 1
+TITOLO: Fusione: 4 volte l’energia laser sul bersaglio
+TESTO: Un record sperimentale: il dato non comprende l’energia consumata dall’intero impianto.
+
+Le altre slide restano invariate.

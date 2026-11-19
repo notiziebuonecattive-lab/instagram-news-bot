@@ -1,0 +1,7 @@
+POST 024_curiosita_segnale_wow
+
+SLIDE 1
+TITOLO: Il segnale Wow!: 72 secondi di mistero
+TESTO: Registrato nel 1977 da un radiotelescopio, ha ancora un’origine sconosciuta.
+
+Le altre slide restano invariate.

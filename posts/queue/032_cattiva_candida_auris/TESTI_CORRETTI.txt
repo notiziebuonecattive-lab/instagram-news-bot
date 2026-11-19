@@ -1,0 +1,7 @@
+POST 032_cattiva_candida_auris
+
+SLIDE 3
+TITOLO: I numeri negli Stati Uniti
+TESTO: Nel 2025 il CDC ha segnalato 8.780 casi clinici negli USA. Sono rilevazioni da campioni diagnostici, non 8.780 infezioni invasive.
+
+Le altre slide restano invariate.
