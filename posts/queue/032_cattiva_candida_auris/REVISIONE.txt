@@ -1,0 +1,4 @@
+Creato automaticamente il 2026-11-19 a partire dal testo originale 26_candida_auris_ospedali.txt.
+Categoria: cattiva
+Slide: 4
+Numerazione GitHub: 032_cattiva_candida_auris

@@ -1,0 +1,4 @@
+Creato automaticamente il 2026-11-19 a partire dal testo originale 25_dengue_record_mondiale.txt.
+Categoria: cattiva
+Slide: 3
+Numerazione GitHub: 031_cattiva_dengue_record

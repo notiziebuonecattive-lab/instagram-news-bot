@@ -1,0 +1,34 @@
+NOTIZIA 27 — MILIONI DETRITI SPAZIALI
+CATEGORIA: Notizie Brutte
+PERIODO DI RIFERIMENTO: 2026
+
+TESTI DEL CAROSELLO
+===================
+
+SLIDE 1 — COPERTINA
+TITOLO: Intorno alla Terra volano milioni di frammenti
+TESTO: Non sono astronavi: sono detriti orbitali che possono mettere a rischio satelliti e missioni.
+
+SLIDE 2 — APPROFONDIMENTO
+TITOLO: Da dove vengono
+TESTO: Stadi di razzi, satelliti inattivi e collisioni producono frammenti che continuano a orbitare intorno alla Terra, spesso a velocità molto elevate.
+
+SLIDE 3 — APPROFONDIMENTO
+TITOLO: Il rischio delle collisioni
+TESTO: I modelli dell’ESA stimano circa 1,5 milioni di frammenti orbitali fra uno e dieci centimetri. Sono stime, non oggetti tutti identificati. Anche detriti piccoli possono danneggiare satelliti: servono misure di prevenzione e rimozione.
+
+CAPTION INSTAGRAM
+=================
+
+Lo spazio vicino alla Terra non è vuoto. Decenni di lanci, esplosioni e collisioni hanno lasciato un’enorme popolazione di oggetti artificiali in orbita. Secondo il portale statistico dell’Agenzia spaziale europea, i modelli indicano circa 1,5 milioni di detriti fra uno e dieci centimetri. Si tratta di stime, non di singoli frammenti tutti identificati da radar. Il problema è che le velocità relative possono essere elevatissime: anche piccoli pezzi possono mettere in pericolo satelliti e missioni. Nuove regole per smaltire i veicoli a fine vita e progetti di rimozione attiva cercano di rendere l’attività spaziale più sostenibile. Il rischio non è fantascienza; è una questione tecnica molto concreta.
+
+HASHTAG
+=======
+#DetritiSpaziali #Spazio #ESA #Satelliti #Astronomia #Scienza #Tecnologia #Notizie
+
+FONTI CONSULTABILI
+==================
+- ESA, statistiche orbitali
+  https://sdup.esoc.esa.int/discosweb/statistics/
+- ESA, Space Environment Report 2026
+  https://www.esa.int/articles/esa-space-environment-report-2026

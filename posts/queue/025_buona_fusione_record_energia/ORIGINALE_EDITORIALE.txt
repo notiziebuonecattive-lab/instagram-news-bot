@@ -1,0 +1,38 @@
+NOTIZIA 13 — FUSIONE RECORD ENERGIA BERSAGLIO
+CATEGORIA: Notizie Belle
+PERIODO DI RIFERIMENTO: 2025
+
+TESTI DEL CAROSELLO
+===================
+
+SLIDE 1 — COPERTINA
+TITOLO: Fusione nucleare: energia quattro volte maggiore
+TESTO: Un esperimento ha ottenuto un risultato da record. Ma non abbiamo ancora una centrale elettrica a fusione.
+
+SLIDE 2 — APPROFONDIMENTO
+TITOLO: L’idea è imitare le stelle
+TESTO: La fusione unisce nuclei leggeri liberando energia. Al National Ignition Facility, negli USA, potenti laser comprimono una piccolissima capsula di combustibile.
+
+SLIDE 3 — APPROFONDIMENTO
+TITOLO: Il record del 2025
+TESTO: Il 7 aprile 2025, 2,08 megajoule di energia laser sul bersaglio hanno prodotto 8,6 megajoule di energia da fusione: un guadagno sul bersaglio superiore a quattro.
+
+SLIDE 4 — APPROFONDIMENTO
+TITOLO: Perché non alimenta ancora le case
+TESTO: Il conteggio non comprende tutta l’elettricità necessaria all’impianto e ai laser. Trasformare questi esperimenti in centrali pratiche è una sfida ancora aperta.
+
+CAPTION INSTAGRAM
+=================
+
+La fusione nucleare è una delle grandi frontiere della ricerca energetica. Il 7 aprile 2025 il National Ignition Facility del Lawrence Livermore National Laboratory ha raggiunto 8,6 megajoule di energia liberata dalla fusione, a fronte di 2,08 megajoule di luce laser arrivata al bersaglio: un guadagno pari a circa 4,13. È un risultato sperimentale molto importante e conferma che l’ignizione può essere ottenuta ripetutamente. Ma c’è una precisazione fondamentale: il guadagno riguarda il bersaglio, non il bilancio elettrico dell’intera struttura. Non è quindi corretto affermare che la fusione sia già una fonte commerciale di elettricità. La strada è lunga, ma la fisica ha fatto un passo notevole.
+
+HASHTAG
+=======
+#FusioneNucleare #Fisica #Energia #Scienza #Innovazione #Ricerca #NotiziePositive #Tecnologia
+
+FONTI CONSULTABILI
+==================
+- Lawrence Livermore National Laboratory, rapporto 2025
+  https://annual.llnl.gov/fy-2025/national-ignition-facility-2025
+- LLNL, spiegazione del guadagno
+  https://str.llnl.gov/str-julyaugust-2025/future-ignition

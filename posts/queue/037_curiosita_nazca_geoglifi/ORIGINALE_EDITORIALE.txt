@@ -1,0 +1,38 @@
+NOTIZIA 36 — NAZCA 303 GEOGLIFI INTELLIGENZA ARTIFICIALE
+CATEGORIA: Misteri
+PERIODO DI RIFERIMENTO: 2024
+
+TESTI DEL CAROSELLO
+===================
+
+SLIDE 1 — COPERTINA
+TITOLO: L’IA ha trovato 303 figure nascoste nel deserto
+TESTO: Erano lì da secoli. Un nuovo metodo di ricerca ha aiutato gli archeologi a riconoscerle.
+
+SLIDE 2 — APPROFONDIMENTO
+TITOLO: Il deserto di Nazca
+TESTO: In Perù, enormi figure e segni tracciati sul terreno raccontano aspetti delle società antiche. Alcuni geoglifi sono difficili da individuare anche dall’alto.
+
+SLIDE 3 — APPROFONDIMENTO
+TITOLO: La scoperta del 2024
+TESTO: Ricercatori della Yamagata University e di IBM hanno usato un sistema di intelligenza artificiale per individuare siti promettenti. Le verifiche sul campo hanno documentato 303 nuovi geoglifi figurativi.
+
+SLIDE 4 — APPROFONDIMENTO
+TITOLO: Il loro significato è ancora studiato
+TESTO: Le posizioni delle figure offrono indizi su possibili attività rituali e comunitarie. Non è una prova di piste per astronavi o interventi extraterrestri.
+
+CAPTION INSTAGRAM
+=================
+
+Il deserto di Nazca custodiva ancora centinaia di figure che gli studiosi non avevano documentato. Nel 2024 un gruppo della Yamagata University, in collaborazione con IBM Research, ha pubblicato uno studio su PNAS che descrive la scoperta di 303 nuovi geoglifi figurativi in sei mesi di indagini sul campo. L’intelligenza artificiale non ha “scavato da sola”: ha aiutato a selezionare aree promettenti nelle immagini, che poi i ricercatori hanno controllato direttamente. Le figure comprendono soggetti diversi e offrono nuove informazioni sull’uso del paesaggio da parte delle popolazioni antiche. Il significato di ogni singola immagine non è automaticamente noto, ma la scoperta dimostra come strumenti moderni possano cambiare l’archeologia.
+
+HASHTAG
+=======
+#Nazca #Geoglifi #Archeologia #IntelligenzaArtificiale #Misteri #Peru #Scoperte #Storia
+
+FONTI CONSULTABILI
+==================
+- Yamagata University, 2024
+  https://www.yamagata-u.ac.jp/en/information/info/20240924
+- PNAS, articolo scientifico
+  https://doi.org/10.1073/pnas.2407652121

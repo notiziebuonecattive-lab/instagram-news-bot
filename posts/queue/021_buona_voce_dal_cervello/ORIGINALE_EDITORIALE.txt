@@ -1,0 +1,38 @@
+NOTIZIA 09 — CERVELLO TRASFORMATO IN VOCE
+CATEGORIA: Notizie Belle
+PERIODO DI RIFERIMENTO: 2025
+
+TESTI DEL CAROSELLO
+===================
+
+SLIDE 1 — COPERTINA
+TITOLO: Non poteva parlare. Una macchina le ha dato una voce.
+TESTO: Un’interfaccia cervello-computer sperimentale è riuscita a convertire segnali neurali in parlato sintetico quasi in tempo reale.
+
+SLIDE 2 — APPROFONDIMENTO
+TITOLO: La voce parte dal cervello
+TESTO: Una persona con grave paralisi non riusciva più a parlare. I ricercatori hanno registrato l’attività della corteccia coinvolta nella produzione del linguaggio attraverso sensori impiantati.
+
+SLIDE 3 — APPROFONDIMENTO
+TITOLO: Dai segnali alle parole
+TESTO: Un modello di intelligenza artificiale ha convertito l’attività neurale in audio continuo, con aggiornamenti ravvicinati. La sintesi è stata personalizzata per ricordare la voce precedente della partecipante.
+
+SLIDE 4 — APPROFONDIMENTO
+TITOLO: Una tecnologia ancora sperimentale
+TESTO: Non legge liberamente i pensieri e non è disponibile come prodotto comune. È una neuroprotesi studiata in condizioni cliniche controllate, con grandi possibilità ma anche limiti tecnici.
+
+CAPTION INSTAGRAM
+=================
+
+Nel 2025 uno studio pubblicato su Nature Neuroscience ha mostrato una neuroprotesi capace di produrre parlato sintetico a partire dai segnali cerebrali di una partecipante con grave paralisi e impossibilità di articolare parole. Gli algoritmi elaboravano l’attività neurale in intervalli molto brevi e generavano una voce personalizzata, ispirata a quella della persona prima della lesione. È un risultato diverso dai classici sistemi che compongono lentamente frasi sullo schermo: qui l’obiettivo è rendere la conversazione più fluida. Bisogna evitare una semplificazione diffusa: non è una macchina che può leggere qualsiasi pensiero. È una tecnologia clinica sperimentale progettata per decodificare specifici segnali collegati al linguaggio.
+
+HASHTAG
+=======
+#Neuroscienze #IntelligenzaArtificiale #Medicina #Ricerca #Innovazione #Scienza #NotiziePositive #Tecnologia
+
+FONTI CONSULTABILI
+==================
+- Nature Neuroscience, 2025
+  https://www.nature.com/articles/s41593-025-01905-6
+- NIH, approfondimento 2025
+  https://www.nih.gov/news-events/nih-research-matters/brain-computer-interface-restores-natural-speech-after-paralysis
