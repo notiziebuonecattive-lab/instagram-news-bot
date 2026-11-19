@@ -1,4 +1,9 @@
-Creato automaticamente il 2026-11-19 a partire dal testo originale 37_segnale_wow_72_secondi.txt.
-Categoria: curiosita
-Slide: 3
-Numerazione GitHub: 038_curiosita_segnale_wow
+CODA 038 - ORIGINALE 37
+
+Confermati data 15/08/1977 e durata della finestra osservativa ~72 s; origine non provata.
+
+Fonti HTTPS: 2 di 2 domini. Controllo contenutistico con ricerca web; NON certificazione esaustiva.
+
+GRAFICA: immagini low-poly integrate nel template originale; controllo dimensioni e opacità effettuato. Controllo visuale tramite anteprima disponibile.
+
+19/11/2026 — Composizione completata su template trasparente, illustrazione low-poly unica riutilizzata nel carosello. Nota IA inserita nella caption. URL verificati formalmente (HTTPS/domìni); raggiungibilità e contenuto dei link non ricontrollati in questo passaggio.

@@ -1,4 +1,9 @@
-Creato automaticamente il 2026-11-19 a partire dal testo originale 26_candida_auris_ospedali.txt.
-Categoria: cattiva
-Slide: 4
-Numerazione GitHub: 032_cattiva_candida_auris
+CODA 032 - ORIGINALE 26
+
+CDC: 8.780 casi clinici USA nel 2025, aggiornamento pubblicato novembre 2026; ECDC per contesto UE.
+
+Fonti HTTPS: 2 di 2 domini. Controllo contenutistico con ricerca web; NON certificazione esaustiva.
+
+GRAFICA: immagini low-poly integrate nel template originale; controllo dimensioni e opacità effettuato. Controllo visuale tramite anteprima disponibile.
+
+19/11/2026 — Composizione completata su template trasparente, illustrazione low-poly unica riutilizzata nel carosello. Nota IA inserita nella caption. URL verificati formalmente (HTTPS/domìni); raggiungibilità e contenuto dei link non ricontrollati in questo passaggio.

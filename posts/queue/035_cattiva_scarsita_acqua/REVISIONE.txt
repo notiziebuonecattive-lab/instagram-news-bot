@@ -1,4 +1,9 @@
-Creato automaticamente il 2026-11-19 a partire dal testo originale 29_quattro_miliardi_scarsita_acqua.txt.
-Categoria: cattiva
-Slide: 4
-Numerazione GitHub: 035_cattiva_scarsita_acqua
+CODA 035 - ORIGINALE 29
+
+Dato dei 4 miliardi riferito ad almeno un mese annuo: stima di scarsità, non carenza permanente di acqua potabile.
+
+Fonti HTTPS: 2 di 2 domini. Controllo contenutistico con ricerca web; NON certificazione esaustiva.
+
+GRAFICA: immagini low-poly integrate nel template originale; controllo dimensioni e opacità effettuato. Controllo visuale tramite anteprima disponibile.
+
+19/11/2026 — Composizione completata su template trasparente, illustrazione low-poly unica riutilizzata nel carosello. Nota IA inserita nella caption. URL verificati formalmente (HTTPS/domìni); raggiungibilità e contenuto dei link non ricontrollati in questo passaggio.

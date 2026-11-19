@@ -1,4 +1,9 @@
-Creato automaticamente il 2026-11-19 a partire dal testo originale 11_esame_sangue_supporta_diagnosi_alzheimer.txt.
-Categoria: buona
-Slide: 3
-Numerazione GitHub: 023_buona_esame_sangue_alzheimer
+CODA 023 - ORIGINALE 11
+
+Aggiunta fonte indipendente Mayo Clinic e limite d’età FDA 55+ con sintomi cognitivi.
+
+Fonti HTTPS: 2 di 2 domini. Controllo contenutistico con ricerca web; NON certificazione esaustiva.
+
+GRAFICA: immagini low-poly integrate nel template originale; controllo dimensioni e opacità effettuato. Controllo visuale tramite anteprima disponibile.
+
+19/11/2026 — Composizione completata su template trasparente, illustrazione low-poly unica riutilizzata nel carosello. Nota IA inserita nella caption. URL verificati formalmente (HTTPS/domìni); raggiungibilità e contenuto dei link non ricontrollati in questo passaggio.

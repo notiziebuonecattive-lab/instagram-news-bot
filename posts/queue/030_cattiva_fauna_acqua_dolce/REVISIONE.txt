@@ -1,4 +1,9 @@
-Creato automaticamente il 2026-11-19 a partire dal testo originale 24_fauna_acqua_dolce_rischio_estinzione.txt.
-Categoria: cattiva
-Slide: 3
-Numerazione GitHub: 030_cattiva_fauna_acqua_dolce
+CODA 030 - ORIGINALE 24
+
+Confermati 23.496 animali valutati e quota stimata 24% secondo IUCN/Nature.
+
+Fonti HTTPS: 2 di 2 domini. Controllo contenutistico con ricerca web; NON certificazione esaustiva.
+
+GRAFICA: immagini low-poly integrate nel template originale; controllo dimensioni e opacità effettuato. Controllo visuale tramite anteprima disponibile.
+
+19/11/2026 — Composizione completata su template trasparente, illustrazione low-poly unica riutilizzata nel carosello. Nota IA inserita nella caption. URL verificati formalmente (HTTPS/domìni); raggiungibilità e contenuto dei link non ricontrollati in questo passaggio.

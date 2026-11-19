@@ -1,4 +1,9 @@
-Creato automaticamente il 2026-11-19 a partire dal testo originale 27_milioni_detriti_spaziali.txt.
-Categoria: cattiva
-Slide: 3
-Numerazione GitHub: 033_cattiva_detriti_spaziali
+CODA 033 - ORIGINALE 27
+
+Aggiornati detriti 1–10 cm ai circa 1,5 milioni ESA 2026.
+
+Fonti HTTPS: 3 di 3 domini. Controllo contenutistico con ricerca web; NON certificazione esaustiva.
+
+GRAFICA: immagini low-poly integrate nel template originale; controllo dimensioni e opacità effettuato. Controllo visuale tramite anteprima disponibile.
+
+19/11/2026 — Composizione completata su template trasparente, illustrazione low-poly unica riutilizzata nel carosello. Nota IA inserita nella caption. URL verificati formalmente (HTTPS/domìni); raggiungibilità e contenuto dei link non ricontrollati in questo passaggio.

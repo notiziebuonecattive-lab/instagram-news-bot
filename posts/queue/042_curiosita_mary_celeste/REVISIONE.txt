@@ -1,4 +1,9 @@
-Creato automaticamente il 2026-11-19 a partire dal testo originale 41_mary_celeste_senza_equipaggio.txt.
-Categoria: curiosita
-Slide: 4
-Numerazione GitHub: 042_curiosita_mary_celeste
+CODA 042 - ORIGINALE 41
+
+Confermato ritrovamento Mary Celeste 1872; cause dell’abbandono non stabilite.
+
+Fonti HTTPS: 2 di 2 domini. Controllo contenutistico con ricerca web; NON certificazione esaustiva.
+
+GRAFICA: immagini low-poly integrate nel template originale; controllo dimensioni e opacità effettuato. Controllo visuale tramite anteprima disponibile.
+
+19/11/2026 — Composizione completata su template trasparente, illustrazione low-poly unica riutilizzata nel carosello. Nota IA inserita nella caption. URL verificati formalmente (HTTPS/domìni); raggiungibilità e contenuto dei link non ricontrollati in questo passaggio.

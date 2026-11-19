@@ -1,4 +1,9 @@
-Creato automaticamente il 2026-11-19 a partire dal testo originale 14_brasile_trasmissione_hiv_neonati.txt.
-Categoria: buona
-Slide: 3
-Numerazione GitHub: 026_buona_brasile_hiv_neonati
+CODA 026 - ORIGINALE 14
+
+Confermata validazione OMS dicembre 2025; eliminazione come problema di sanità pubblica, non zero trasmissioni.
+
+Fonti HTTPS: 2 di 2 domini. Controllo contenutistico con ricerca web; NON certificazione esaustiva.
+
+GRAFICA: immagini low-poly integrate nel template originale; controllo dimensioni e opacità effettuato. Controllo visuale tramite anteprima disponibile.
+
+19/11/2026 — Composizione completata su template trasparente, illustrazione low-poly unica riutilizzata nel carosello. Nota IA inserita nella caption. URL verificati formalmente (HTTPS/domìni); raggiungibilità e contenuto dei link non ricontrollati in questo passaggio.
