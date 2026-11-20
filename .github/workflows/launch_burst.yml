@@ -1,0 +1,78 @@
+name: Instagram - LANCIO 5 caroselli ogni 10 minuti
+
+# Workflow UNA TANTUM e solo manuale: NON modifica lo schedule settimanale.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'preview = controllo; publish = 5 invii reali, ogni 10 minuti'
+        type: choice
+        required: true
+        default: preview
+        options: [preview, publish]
+      confirmation:
+        description: 'Per inviare davvero scrivi PUBBLICA_5'
+        type: string
+        required: false
+        default: ''
+
+concurrency:
+  # Stessa chiave del normale publisher: no invii contemporanei.
+  group: instagram-news-publisher
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  lancio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      ALLOW_PUBLISH: ${{ vars.ALLOW_PUBLISH || 'false' }}
+      BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+      BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: true
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Controlla le 20 immagini e i 5 testi (nessuna pubblicazione)
+        run: python -m bot.launch_batch validate
+      - name: Mostra modalita' anteprima
+        if: ${{ inputs.mode == 'preview' }}
+        run: echo 'ANTEPRIMA COMPLETATA. Nessun invio a Buffer.'
+      - name: Blocco intenzionale senza autorizzazione
+        if: ${{ inputs.mode == 'publish' && (inputs.confirmation != 'PUBBLICA_5' || vars.ALLOW_PUBLISH != 'true') }}
+        run: |
+          echo 'BLOCCATO: servono confirmation=PUBBLICA_5 e ALLOW_PUBLISH=true' >&2
+          exit 1
+      - name: Pubblica cinque post, almeno 10 minuti tra un invio e il successivo
+        if: ${{ inputs.mode == 'publish' && inputs.confirmation == 'PUBBLICA_5' && vars.ALLOW_PUBLISH == 'true' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for i in 1 2 3 4 5; do
+            echo "========== LANCIO POST $i/5 =========="
+            # Su riesecuzione, rispetta la distanza dalla precedente conferma Buffer.
+            python -m bot.launch_batch wait --index "$i"
+            python -m bot.launch_batch reserve --index "$i"
+            if git diff --quiet -- data/launch_state.json; then
+              echo "Post $i gia' inviato: non lo duplico"
+              continue
+            fi
+            # Il commit PRECEDE la richiesta a Buffer: nessun invio doppio se si interrompe.
+            git add data/launch_state.json
+            git commit -m "Reserve launch carousel $i/5 before Buffer"
+            git push origin HEAD:main
+            python -m bot.launch_batch send --index "$i" --repo "$GITHUB_REPOSITORY" --commit "$(git rev-parse HEAD)"
+            git add data/launch_state.json
+            git commit -m "Record Buffer acceptance of launch carousel $i/5"
+            git push origin HEAD:main
+          done
+          echo 'FINE CAMPAGNA. Il normale workflow del martedi/venerdi non e stato modificato.'
