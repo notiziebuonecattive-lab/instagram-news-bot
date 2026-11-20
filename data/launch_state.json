@@ -26,8 +26,10 @@
       "sent_at": "2026-11-20T21:30:27.144237+01:00"
     },
     "005_curiosita_lancio_catena_romana": {
-      "status": "reserved",
-      "reserved_at": "2026-11-20T21:40:27.211194+01:00"
+      "status": "sent_to_buffer",
+      "reserved_at": "2026-11-20T21:40:27.211194+01:00",
+      "buffer_post_id": "6b00b03d73831df014872f57",
+      "sent_at": "2026-11-20T21:40:39.791732+01:00"
     }
   }
 }
