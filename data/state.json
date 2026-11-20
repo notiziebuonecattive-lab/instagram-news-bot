@@ -6,9 +6,15 @@
       "slot": "2026-11-19",
       "buffer_post_id": "6afe3629ebd4409dc9038a3d",
       "sent_at": "2026-11-19T00:35:15.862098+01:00"
+    },
+    "001_buona_terapia_genetica_cps1_ripubblica": {
+      "status": "reserved",
+      "reserved_at": "2026-11-20T12:43:27.411164+01:00",
+      "slot": "2026-11-20"
     }
   },
   "slots": {
-    "2026-11-19": "001_buona_terapia_genetica_cps1"
+    "2026-11-19": "001_buona_terapia_genetica_cps1",
+    "2026-11-20": "001_buona_terapia_genetica_cps1_ripubblica"
   }
 }
