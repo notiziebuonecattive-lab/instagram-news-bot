@@ -8,9 +8,11 @@
       "sent_at": "2026-11-19T00:35:15.862098+01:00"
     },
     "001_buona_terapia_genetica_cps1_ripubblica": {
-      "status": "reserved",
+      "status": "sent_to_buffer",
       "reserved_at": "2026-11-20T12:43:27.411164+01:00",
-      "slot": "2026-11-20"
+      "slot": "2026-11-20",
+      "buffer_post_id": "6b0032613d025b9e58aa154a",
+      "sent_at": "2026-11-20T12:43:40.168586+01:00"
     }
   },
   "slots": {
