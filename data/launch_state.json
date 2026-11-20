@@ -8,8 +8,10 @@
       "sent_at": "2026-11-20T20:59:48.634048+01:00"
     },
     "002_cattiva_lancio_fauna_73": {
-      "status": "reserved",
-      "reserved_at": "2026-11-20T21:09:48.699922+01:00"
+      "status": "sent_to_buffer",
+      "reserved_at": "2026-11-20T21:09:48.699922+01:00",
+      "buffer_post_id": "6b00a90ee3772ee0cf636950",
+      "sent_at": "2026-11-20T21:10:01.167117+01:00"
     }
   }
 }
