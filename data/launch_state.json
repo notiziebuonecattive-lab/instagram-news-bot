@@ -12,6 +12,10 @@
       "reserved_at": "2026-11-20T21:09:48.699922+01:00",
       "buffer_post_id": "6b00a90ee3772ee0cf636950",
       "sent_at": "2026-11-20T21:10:01.167117+01:00"
+    },
+    "003_curiosita_lancio_marte": {
+      "status": "reserved",
+      "reserved_at": "2026-11-20T21:20:01.232700+01:00"
     }
   }
 }
