@@ -1,4 +1,9 @@
 {
   "campaign": "lancio_cinque_2026_11",
-  "posts": {}
+  "posts": {
+    "001_buona_lancio_coralli": {
+      "status": "reserved",
+      "reserved_at": "2026-11-20T20:59:35.853424+01:00"
+    }
+  }
 }
